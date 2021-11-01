@@ -27,7 +27,7 @@ const Router: React.FC = () => (
     <BrowserRouter>
       <Switch>
         {/* Instances */}
-        <Route path="/" component={Instances} />
+        <Route exact path="/" component={Instances} />
         <Route path="/instances" component={Instances} />
         {/* Workspaces */}
         <Route path={`/workspaces/${InstanceKey}`} component={Workspaces} />
