@@ -2,7 +2,11 @@ import React, { createContext, Reducer, useReducer, useState } from "react";
 import useLocalStorage from "@rehooks/local-storage";
 
 import { createStore, EntityStore } from "./entity-store";
-import { createActions, EntityActions } from "./entity-actions";
+import {
+  createActions,
+  createLocalStorageActions,
+  EntityActions,
+} from "./entity-actions";
 
 type Options = {
   useLocalStorage?: boolean;
@@ -17,19 +21,20 @@ type EntityContext<Entity> = {
 };
 
 type Action =
- | { type: 'add', payload: any }
- | { type: 'delete', results: string }
- | { type: 'failure', error: string };
+  | { type: "add"; payload: any }
+  | { type: "delete"; results: string }
+  | { type: "failure"; error: string };
 
 function reducer<Entity>(state: Partial<EntityStore<Entity>>, action: Action) {
-  console.log("Reducer called", state, action)
+  console.log("Reducer called", state, action);
   switch (action.type) {
-    case 'add':
+    case "add":
       return {
-        ...state, ...action.payload
+        ...state,
+        ...action.payload,
       };
-    case 'delete':
-      return {...state};
+    case "delete":
+      return { ...state };
     default:
       throw new Error();
   }
@@ -50,9 +55,11 @@ function createEntityContext<Entity>(
   const Provider: React.FC = ({ children }) => {
     const [state, setState] = opts?.useLocalStorage
       ? useLocalStorage<EntityStore<Entity>>(entityKey, _intialState)
-      : useReducer<Reducer<any, any>>(reducer, _intialState, );
+      : useReducer<Reducer<any, any>>(reducer, _intialState);
 
-    const actions = createActions<Entity>(state, setState);
+    const actions = opts?.useLocalStorage
+      ? createLocalStorageActions<Entity>(state, setState)
+      : createActions<Entity>(state, setState);
     return (
       <Context.Provider
         value={{
