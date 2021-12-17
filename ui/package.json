@@ -88,8 +88,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@emotion/react": "^11.1.5",
-    "@emotion/styled": "^11.1.5",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
     "@rehooks/local-storage": "^2.4.0",
     "antd": "^4.13.0",
     "axios": "^0.24.0",
