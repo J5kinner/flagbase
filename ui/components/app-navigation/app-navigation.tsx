@@ -1,17 +1,18 @@
 /* eslint-disable no-return-assign */
 /** @jsx jsx */
 
-import React, { ReactElement, useContext, useState } from "react";
-import { PageHeaderProps } from "antd";
-import { PageHeaderStyled } from "./app-navigation.styles";
-import { NavigationElement } from "./navigation-element";
-import { jsx } from "@emotion/react";
-import styled from "@emotion/styled";
-import { HomeFilled, RightOutlined } from "@ant-design/icons";
-import { Redirect, useHistory } from "react-router-dom";
-import { InstanceContext } from "../../app/context/instance";
-import { WorkspaceContext } from "../../app/context/workspace";
-import { convertWorkspaces } from "../../app/pages/workspaces/workspaces";
+import React, { ReactElement, useContext, useState } from 'react';
+import { PageHeaderProps } from 'antd';
+import { PageHeaderStyled } from './app-navigation.styles';
+import { NavigationElement } from './navigation-element';
+import { jsx } from '@emotion/react';
+import styled from '@emotion/styled';
+import { HomeFilled, RightOutlined } from '@ant-design/icons';
+import { Redirect, useHistory } from 'react-router-dom';
+import { InstanceContext } from '../../app/context/instance';
+import { WorkspaceContext } from '../../app/context/workspace';
+import { convertWorkspaces } from '../../app/pages/workspaces/workspaces';
+import Logo from '../logo';
 
 const SubMenuContainer = styled.div`
   display: flex;
@@ -23,11 +24,11 @@ export interface ButtonProps {
 }
 
 type FlagbaseSubMenuProps =
-  | "Home"
-  | "Instance"
-  | "Workspace"
-  | "Project"
-  | "Flags"
+  | 'Home'
+  | 'Instance'
+  | 'Workspace'
+  | 'Project'
+  | 'Flags'
 
 type FlagbaseSubMenuValues = {
   title: ReactElement,
@@ -49,24 +50,25 @@ type SubMenuProps = {
 };
 
 const AppSubMenu: React.FC<SubMenuProps> = ({ subMenuContent }) => {
-  const [currHover, setHover] = useState<string>("");
+  const [currHover, setHover] = useState<string>('');
   const [redirect, setRedirect] = useState<string>('');
   if (redirect) {
     return (
       <Redirect to={redirect} />
-    )
+    );
   }
   return (
     <SubMenuContainer>
       {Object.keys(subMenuContent).map((title: string, index) => (
-        <NavigationElementContainer>
+        <NavigationElementContainer key={`${title}_${index}`}
+        >
+          <Logo />
           <NavigationElement
             title={subMenuContent[title]?.title || title}
-            key={`${title}_${index}`}
             subMenuContent={subMenuContent[title].content}
             isHover={title === currHover}
             onHover={() => setHover(title)}
-            offHover={() => setHover("")}
+            offHover={() => setHover('')}
             onClick={() => setRedirect(subMenuContent[title]?.redirect)}
           />
           {index !== Object.keys(subMenuContent).length - 1 && (
@@ -86,29 +88,29 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
   const {
     entities: workspaces,
     addEntity,
-    status: workspaceStatus,
+    status: workspaceStatus
   } = useContext(WorkspaceContext);
-  
+
   const reduceSubMenuContent = (path: string) => {
-    let subMenuContent: Partial<Record<FlagbaseSubMenuProps, FlagbaseSubMenuValues>> = {
+    const subMenuContent: Partial<Record<FlagbaseSubMenuProps, FlagbaseSubMenuValues>> = {
       Home: {
         title: <HomeFilled />,
         redirect: '/',
         content: [
           {
-            title: "test",
-            href: "#",
-          },
-        ],
-      },
+            title: 'test',
+            href: '#'
+          }
+        ]
+      }
     };
 
-    if (workspaceStatus === "loaded") {
-      console.log('workspaces', workspaces)
-      subMenuContent["Workspace"] = {
+    if (workspaceStatus === 'loaded') {
+      console.log('workspaces', workspaces);
+      subMenuContent.Workspace = {
         title: <React.Fragment>Workspaces</React.Fragment>,
-        redirect: `/workspaces`,
-        content: convertWorkspaces(Object.values((workspaces as unknown) as {})),
+        redirect: '/workspaces',
+        content: convertWorkspaces(Object.values((workspaces as unknown) as {}))
       };
     }
     return subMenuContent;
